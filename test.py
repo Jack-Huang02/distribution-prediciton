@@ -1,21 +1,7 @@
-import matplotlib.pyplot as plt
-import numpy as np
+import math
 
-#plot 1:
-xpoints = np.array([0, 6])
-ypoints = np.array([0, 100])
-
-plt.subplot(1, 2, 1)
-plt.scatter(xpoints,ypoints)
-plt.title("plot 1")
-
-#plot 2:
-x = np.array([1, 2, 3, 4])
-y = np.array([1, 4, 9, 16])
-
-plt.subplot(1, 2, 2)
-plt.scatter(x,y)
-plt.title("plot 2")
-
-plt.suptitle("RUNOOB subplot Test")
-plt.show()
+x = [0.1, 12, 4, 56, 3]
+y = [12.2, 3, 9.3, 39, 19]
+c = [1.7, 4, 2, 24, 32.4]
+for i in range(len(x)):
+    c[i] = math.cos(-c[i])
