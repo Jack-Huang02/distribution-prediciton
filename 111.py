@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from dataset import getdata
 from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import IsolationForest
 
 class Generator(nn.Module):
     def __init__(self):
@@ -33,10 +34,14 @@ class Discriminator(nn.Module):
         return self.model(coords)
 
 # 假设 coords 是一个形状为 (200, 2) 的 numpy 数组
-X, Y = getdata(32, 128)
-coords = list(zip(X, Y))  # 模拟数据，应替换为实际数据
+X, Y = getdata(32, 64)
+coords = np.array(list(zip(X, Y)))  # 模拟数据，应替换为实际数据
+iso = IsolationForest(contamination=0.02)
+outliers = iso.fit_predict(coords)
+clean_coords = coords[outliers != -1]
+
 scaler = StandardScaler()
-input_data_normalized = scaler.fit_transform(coords)
+input_data_normalized = scaler.fit_transform(clean_coords)
 data = torch.tensor(input_data_normalized, dtype=torch.float32)
 
 # 创建 DataLoader
@@ -89,6 +94,9 @@ for epoch in range(epochs):
     g_loss_list.append(g_loss.item())
 
     print(f'Epoch {epoch+1}, Discriminator Loss: {d_loss.item()}, Generator Loss: {g_loss.item()}')
+# 保存模型参数目
+torch.save(generator.state_dict(), './model/generator.pth')
+torch.save(discriminator.state_dict(), './model/discriminator.pth')
 
 # 绘制损失曲线
 plt.figure(figsize=(10, 5))
@@ -111,7 +119,7 @@ original_data_scaled = scaler.inverse_transform(generated_coords)
 
 
 
-plt.scatter(X, Y, color='blue', alpha=0.5, label='Original Data')
+plt.scatter(clean_coords[:, 0], clean_coords[:, 1], color='blue', alpha=0.5, label='Original Data')
 
 # 可视化生成的反归一化数据
 plt.scatter(original_data_scaled[:, 0], original_data_scaled[:, 1], color='red', alpha=0.5, label='Generated Data')
