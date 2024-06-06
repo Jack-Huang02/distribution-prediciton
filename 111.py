@@ -96,7 +96,7 @@ for epoch in range(epochs):
     print(f'Epoch {epoch+1}, Discriminator Loss: {d_loss.item()}, Generator Loss: {g_loss.item()}')
 # 保存模型参数目
 torch.save(generator.state_dict(), './model/generator.pth')
-torch.save(discriminator.state_dict(), './model/discriminator.pth')
+
 
 # 绘制损失曲线
 plt.figure(figsize=(10, 5))
